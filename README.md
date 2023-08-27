@@ -239,28 +239,28 @@
 >           /* 1.order */
 >           /* 定义项目的排列顺序,默认值为0,值越小,排列越靠前 */
 >           /* order:0 */
->           
+>                 
 >           /* 剩余空间=总空间-固定空间(设置的width) */
->           
+>                 
 >           /* 2.flex-grow */
 >           /* 定义项目的放大比例,默认为0,即存在剩余空间也不放大 */
 >           /* 项目定义的值都相同,则等分剩余空间,即按所占比例分配 */
 >           /* flow-grow:0 */
->           
+>                 
 >           /* 3.flex-shrink */
 >           /* 定义项目的缩小比例,默认为1,即空间不够时,按等比例缩小,值为0不缩小 */
 >           /* flex-shrink:1 */
->           
+>                 
 >           /* 4.flex-basis */
 >           /* 定义分配多余空间前,项目空间的大小,相当于width */
 >           /* flex-basis:auto(默认值,即项目本来的大小)/<length> */
->           
+>                 
 >           /* 5.flex */
 >           /* flex-grow,flex-shrink,flex-basis的合写 */
 >           /* 默认值 flex:0 1 auto */
 >           /* 两个快捷值:auto(1 1 auto)和none(0 0 auto) */
 >           /* flex:flex-grow flex-shrink flex-basis */
->           
+>                 
 >           /* 6.align-self */
 >           /* 允许单个项目有不同于其他项目,在交叉轴上的对齐方式,可覆盖align-items */
 >           /* 默认值为auto,表示继承父元素的align-items属性,如果没有父元素,则等同于stretch */
@@ -679,12 +679,12 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >             function fn () {
 >                 console.log(a);
 >             }
->                                                                                         
+>                                                                                                     
 >             function print (fn) {
 >                 let a = 200;
 >                 fn()
 >             }
->                                                                                         
+>                                                                                                     
 >             print(fn)
 >     ```
 >
@@ -834,7 +834,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         var results = ["abc", "cba", "nba"]
 >         callbackFn(results)
 >       }
->                   
+>                         
 >       // 实际操作的位置(业务)
 >       var obj = {
 >         names: [],
@@ -844,14 +844,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           // request("/names", function(res) {
 >           //   _this.names = [].concat(res)
 >           // })
->                   
+>                         
 >           // 2.箭头函数写法
 >           request("/names", (res) => {
 >             this.names = [].concat(res)
 >           })
 >         }
 >       }
->                   
+>                         
 >       obj.network()
 >       console.log(obj)
 >   ```
@@ -981,7 +981,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >
 >   ```js
 >     var name = 'window'
->               
+>                     
 >     /*
 >       1.创建一个空的对象
 >       2.将这个空的对象赋值给this
@@ -1004,14 +1004,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         }
 >       }
 >     }
->               
+>                     
 >     var person1 = new Person('person1')
 >     var person2 = new Person('person2')
->               
+>                     
 >     person1.obj.foo1()() // 默认绑定: window
 >     person1.obj.foo1.call(person2)() // 默认绑定: window
 >     person1.obj.foo1().call(person2) // 显式绑定: person2
->               
+>                     
 >     person1.obj.foo2()() // 上层作用域查找: obj(隐式绑定)
 >     person1.obj.foo2.call(person2)() // 上层作用域查找: person2(显式绑定)
 >     person1.obj.foo2().call(person2) // 上层作用域查找: obj(隐式绑定)
@@ -1025,37 +1025,119 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 
 ### 3.4手写bind函数
 
+> * ES5版
+>
+>   ```js
+>           // 手写bind函数
+>           Function.prototype.binds = function () {
+>   
+>               // 将参数转化为数组
+>               const args = Array.prototype.slice.call(arguments)
+>   
+>               // 获取this(取出数组的第一项，剩余的就是传递的参数)
+>               const t = args.shift()
+>   
+>               // 当前函数
+>               const self = this
+>   
+>               // 返回一个函数
+>               return function () {
+>                   return self.apply(t, args)
+>               }
+>           }
+>   ```
+>
+> * ES6版
+>
+>   ```js
+>           function foo (name, age, height) {
+>               console.log(this, name, age, height);
+>           }
+>       
+>           const obj = {
+>               name: 'why'
+>           }
+>       
+>   		Function.prototype.hybind = function (thisArg, ...otherArgs) {
+>       
+>               thisArg = (thisArg === null || thisArg === undefined) ? window : Object(thisArg)
+>       
+>               Object.defineProperty(thisArg, 'fn', {
+>                   enumerable: false,
+>                   configurable: true,
+>                   writable: false,
+>                   value: this
+>               })
+>               return (...newArgs) => {
+>       
+>                   const allArgs = [...otherArgs, ...newArgs]
+>       
+>                   thisArg.fn(...allArgs)
+>               }
+>           }
+>       
+>           const newFoo = foo.hybind(obj, 'hhh', 21)
+>       
+>           newFoo(1.99)
+>   ```
+>
+
+
+
+### 3.5 手写call和apply函数
+
 ```js
-        // 手写bind函数
-        Function.prototype.binds = function () {
-
-            // 将参数转化为数组
-            const args = Array.prototype.slice.call(arguments)
-
-            // 获取this(取出数组的第一项，剩余的就是传递的参数)
-            const t = args.shift()
-
-            // 当前函数
-            const self = this
-
-            // 返回一个函数
-            return function () {
-                return self.apply(t, args)
-            }
+        function foo (name, age, height) {
+            console.log(this, name, age, height);
         }
+
+        const obj = {
+            name: 'why'
+        }
+		
+        // 封装通用逻辑
+        Function.prototype.execFn = function (thisArg, otherArgs) {
+            thisArg = (thisArg === null || thisArg === undefined) ? window : Object(thisArg)
+
+            Object.defineProperty(thisArg, 'fn', {
+                enumerable: false,
+                configurable: true,
+                writable: false,
+                value: this
+            })
+            thisArg.fn(...otherArgs)
+
+            delete thisArg.fn
+        }
+
+        Function.prototype.hyapply = function (thisArg, otherArgs) {
+
+            this.execFn(thisArg, otherArgs)
+        }
+
+
+        Function.prototype.hycall = function (thisArg, ...otherArgs) {
+
+            this.execFn(thisArg, otherArgs)
+
+        }
+
+        foo.hyapply(obj, ['james', '1.88'])
+
+        foo.hycall(obj, 'kobe', '1.89')
+
+        foo.hyapply(123, ['why', 18])
+        foo.hycall(null, 'why1', 19)
+        foo.hycall(undefined, 'why2', 20)
 ```
 
 
 
-### 3.5 手写call函数
 
-
-
-### 3.6 手写apply函数
 
  
 
-### 3.7 实际开发中闭包的应用场景
+### 3.6 实际开发中闭包的应用场景
 
 > * 隐藏数据, 做一个简单的cache工具
 >
@@ -1071,7 +1153,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   }
 >               }
 >           }
->                                             
+>                                                   
 >           const c = createCache()
 >           c.set('a', 100)
 >           console.log(c.get('a'));
@@ -1085,16 +1167,16 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           let a
 >           // 每次for循环都会创建出一个新的块级作用域
 >           for (let i = 0; i < 10; i++) {
->                                             
+>                                                   
 >               a = document.createElement('a')
 >               a.innerHTML = i + '<br>'
 >               a.addEventListener('click', function (e) {
 >                   e.preventDefault();
 >                   alert(i)
 >               })
->                                             
+>                                                   
 >               document.body.appendChild(a)
->                                             
+>                                                   
 >           }
 >   ```
 >
@@ -1102,29 +1184,29 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 
 
 
-### 3.9 输入url到显示页面的整个流程（包括整个浏览器渲染的流程）
+### 3.7 输入url到显示页面的整个流程（包括整个浏览器渲染的流程）
 
 
 
-### 3.9 V8引擎的运行原理
+### 3.8 V8引擎的运行原理
 
 
 
-### 3.10 JS运行原理流程（包括作用域链）
+### 3.9 JS运行原理流程（包括作用域链）
 
 
 
-### 3.11 内存管理—JS引擎GC机制
+### 3.10 内存管理—JS引擎GC机制
 
 
 
-### 3.12闭包
+### 3.11闭包
 
 
 
 
 
-### 3.10题目
+### 3.12题目
 
 > * this的不同应用场景，如何取值？
 > * 手写bind函数
@@ -1168,20 +1250,20 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           function loading (src) {
 >               return new Promise((resolve, reject) => {
 >                   const img = document.createElement('img')
->         
+>               
 >                   img.onload = () => {
 >                       resolve(img)
 >                   }
->         
+>               
 >                   img.onerror = () => {
 >                       const error = new Error(`图片加载异常 ${src}`)
 >                       reject(error)
 >                   }
->         
+>               
 >                   img.src = src
 >               })
 >           }
->         
+>               
 >           const url1 = 'https://img3.mukewang.com/szimg/64b0cc640982df8805400304.png'
 >           const url2 = 'https://img3.mukewang.com/szimg/64b9f4fa09cde80805400304.png'
 >           loading(url1).then(img1 => {
@@ -1335,7 +1417,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   console.log(error); // try..catch相当于Promise的catch
 >               }
 >           })()
->                                   
+>                                         
 >   ```
 >
 > 
@@ -1379,15 +1461,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               await async3()
 >               console.log('async1 end 2'); // 7
 >           }
->               
+>                     
 >           async function async2 () {
 >               console.log('async2'); // 3
 >           }
->               
+>                     
 >           async function async3 () {
 >               console.log('async3'); // 6
 >           }
->               
+>                     
 >           console.log('script start'); // 1
 >           async1()
 >           console.log('script end'); // 4
@@ -1455,7 +1537,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               const c = await Promise.reject(300)
 >               console.log('c', c);
 >               console.log('end');
->                                                                                                         
+>                                                                                                                           
 >           })() // 执行完毕，打印什么内容
 >                // 打印至b就因reject报错，而结束
 >   ```
@@ -1466,25 +1548,25 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               await async2()
 >               console.log('async1 end'); // 6
 >           }
->                                     
+>                                           
 >           async function async2 () {
 >               console.log('async2'); // 3
 >           }
 >           console.log('script start'); // 1
->                                     
+>                                           
 >           setTimeout(function () {
 >               console.log('setTimeout'); // 8
 >           }, 0)
->                                     
+>                                           
 >           async1()
->                                     
+>                                           
 >           new Promise(function (resolve) {
 >               console.log('promise1'); // 4
 >               resolve()
 >           }).then(() => {
 >               console.log('promise2'); // 7
 >           })
->                                     
+>                                           
 >           console.log('script end'); // 5
 >   ```
 
@@ -1512,7 +1594,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                           this.value = value
 >                           this.resolveCallbacks.forEach(fn => fn() )
 >                       }
->                                   
+>                                         
 >                   }
 >                   const rejectHandler = (reason) => {
 >                       if (this.state === 'pending') {
@@ -1520,14 +1602,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                           this.reason = reason
 >                           this.rejectCallbacks.forEach(fn => fn() )
 >                       }
->                                   
+>                                         
 >                   }
 >                   try {
 >                       fn(resolveHandler, rejectHandler)
 >                   } catch (error) {
 >                       rejectHandler(error)
 >                   }
->                                   
+>                                         
 >               }
 >               then (fn1, fn2) {
 >                   fn1 = typeof fn1 === 'function' ? fn1 : v => v
@@ -1554,7 +1636,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                       })
 >                       // console.log(p1 === this);
 >                       return p1
->                                   
+>                                         
 >                   }
 >                   if (this.state === 'fulfilled') {
 >                       const p1 = new MyPromise((resolve, reject) => {
@@ -1578,23 +1660,23 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                       })
 >                       return p1
 >                   }
->                                   
+>                                         
 >               }
 >               catch (fn) {
 >                   return this.then(null, fn)
 >               }
 >           }
->                                   
+>                                         
 >           // Promise的静态方法
->                                   
+>                                         
 >           MyPromise.resolve = function (value) {
 >               return new MyPromise((resolve, reject) => { resolve(value) })
 >           }
->                                   
+>                                         
 >           MyPromise.reject = function (reason) {
 >               return new MyPromise((resolve, reject) => { reject(reason) })
 >           }
->                                   
+>                                         
 >           // 传入promise数组，等待所有的都fulfilled之后，返回新promise，包含前面的所有结果
 >           MyPromise.all = function (promiseList = []) {
 >               const p1 = new MyPromise((resolve, reject) => {
@@ -1617,7 +1699,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               })
 >               return p1
 >           }
->                                   
+>                                         
 >           // 传入promise数组，只要有一个fulfilled，即可返回新promise
 >           MyPromise.race = function (promiseList = []) {
 >               let resolved = false
@@ -1726,19 +1808,19 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >
 >   ```js
 >             const listNode = document.getElementById('list')
->               
+>                     
 >             // 创建一个文档碎片,此时还没有插入到DOM树中
 >             const frag = document.createDocumentFragment()
->               
+>                     
 >             // 执行插入
 >             for (let i = 0; i < 10; i++) {
 >                 const li = document.createElement('li')
 >                 li.innerHTML = `list item ${i}`
->               
+>                     
 >                 // 先插入文档碎片中,其游离在DOM树之外
 >                 frag.appendChild(li)
 >             }
->               
+>                     
 >             // 都完成之后,再插入到DOM树中
 >             listNode.appendChild(frag)
 >   ```
@@ -1819,7 +1901,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   fn = selector
 >                   selector = null
 >               }
->       
+>             
 >               elem.addEventListener(type, e => {
 >                   const target = e.target
 >                   // 事件代理
@@ -1839,7 +1921,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               event.preventDefault()
 >               alert(this.innerHTML)
 >           })
->       
+>             
 >           // 事件代理
 >           const div3 = document.getElementById('div3')
 >           bindEvent(div3, 'click', 'a', function (event) {
