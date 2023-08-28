@@ -239,28 +239,28 @@
 >           /* 1.order */
 >           /* 定义项目的排列顺序,默认值为0,值越小,排列越靠前 */
 >           /* order:0 */
->                 
+>                       
 >           /* 剩余空间=总空间-固定空间(设置的width) */
->                 
+>                       
 >           /* 2.flex-grow */
 >           /* 定义项目的放大比例,默认为0,即存在剩余空间也不放大 */
 >           /* 项目定义的值都相同,则等分剩余空间,即按所占比例分配 */
 >           /* flow-grow:0 */
->                 
+>                       
 >           /* 3.flex-shrink */
 >           /* 定义项目的缩小比例,默认为1,即空间不够时,按等比例缩小,值为0不缩小 */
 >           /* flex-shrink:1 */
->                 
+>                       
 >           /* 4.flex-basis */
 >           /* 定义分配多余空间前,项目空间的大小,相当于width */
 >           /* flex-basis:auto(默认值,即项目本来的大小)/<length> */
->                 
+>                       
 >           /* 5.flex */
 >           /* flex-grow,flex-shrink,flex-basis的合写 */
 >           /* 默认值 flex:0 1 auto */
 >           /* 两个快捷值:auto(1 1 auto)和none(0 0 auto) */
 >           /* flex:flex-grow flex-shrink flex-basis */
->                 
+>                       
 >           /* 6.align-self */
 >           /* 允许单个项目有不同于其他项目,在交叉轴上的对齐方式,可覆盖align-items */
 >           /* 默认值为auto,表示继承父元素的align-items属性,如果没有父元素,则等同于stretch */
@@ -530,7 +530,7 @@ console.log( Student.prototype )
 console.log( xiaohu.__proto__ === xiaohu.prototype )
 ```
 
-原型图：xxx
+原型图：![](./images/原型继承关系.png)
 
 
 
@@ -538,6 +538,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
   * 每个class都有显示原型prototype
   * 每个实例都有隐式原型______proto_\_
   * 实例的______proto_\_指向对应class的prototype
+  * 每个构造函数和类都是由new Function() 创建出来，每个显示原型对象都是由 new Object() 创建出来
 * 基于原型的查找规则
   * 先在自身属性和方法寻找
   * 如果找不到则自动去___proto_\__中查找
@@ -552,7 +553,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 
 原型链：xxx
 
-* instanceof的原理：沿着隐式原型链查找，看是否能找到类的显示原型，如果能找到则是类的实例，instanceof运算结果为true
+* xxx  instanceof  yyy的原理：沿着xxx的隐式原型链查找，然后看显示原型中的constructor是否指向yyy，如果能找到则是yyy的实例，instanceof运算结果为true
 
 注意：
 
@@ -561,7 +562,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 
 
 
-### 2.4 ES6之前继承的实现—寄生组合继承
+### 2.4 ES6之前继承的实现—寄生组合继承(兼容性非常好，`__proto__`和setPrototypeOf有兼容性问题)
 
 ```js
     // 创建对象的过程
@@ -626,8 +627,6 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 
 
 
-
-
 ### 2.5 题目
 
 > * 如何判断一个变量是不是数组?
@@ -640,7 +639,10 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 
 ### 3.1 作用域和自由变量
 
+> * 说明（专业术语为ES6之前的，ES6之后的专业术语有些不一样，但总体流程基本一致）：作用域链保存在函数对象里面，函数对象被创建时就有了自己得作用域链。作用域链来自于执行得代码，如果执行的是全局代码，作用域链里面只有GO，如果执行函数代码，函数创建的那一刻，它已经知道了自己的作用域链，它会在你执行函数的时候，把作用域链赋值给执行上下文，告诉执行上下文，我的作用域链就是这个东西，你待会按照我这么个顺序查找就行了。
+>   
 > * 作用域
+>   
 >   * 全局作用域
 >   
 >   * 函数作用域
@@ -654,9 +656,9 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >     }
 >     console.log(x) // 报错
 >     ```
->   
->     
->   
+>
+> 
+>
 > * 自由变量
 >
 >   * 一个变量在当前作用域没有定义，但被使用了
@@ -679,12 +681,12 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >             function fn () {
 >                 console.log(a);
 >             }
->                                                                                                     
+>                                                                                                                 
 >             function print (fn) {
 >                 let a = 200;
 >                 fn()
 >             }
->                                                                                                     
+>                                                                                                                 
 >             print(fn)
 >     ```
 >
@@ -727,12 +729,13 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >
 > * 显示绑定：call/apply/bind
 >
-> * new 绑定：new的四步走
+> * new 绑定：new的五步走
 >
 >   * 1.创建一个全新的对象
 >   * 2.this指向这个对象
->   * 3.执行函数体代码
->   * 4.函数没有返回其他对象，则会返回这个对象
+>   * 3.将函数对象的prototype 赋值给实例对象的`__proto__`
+>   * 4.执行函数体代码
+>   * 5.函数没有返回其他对象，则会返回这个对象
 >
 > * 内置函数的绑定（经验）
 >
@@ -834,7 +837,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         var results = ["abc", "cba", "nba"]
 >         callbackFn(results)
 >       }
->                         
+>                               
 >       // 实际操作的位置(业务)
 >       var obj = {
 >         names: [],
@@ -844,14 +847,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           // request("/names", function(res) {
 >           //   _this.names = [].concat(res)
 >           // })
->                         
+>                               
 >           // 2.箭头函数写法
 >           request("/names", (res) => {
 >             this.names = [].concat(res)
 >           })
 >         }
 >       }
->                         
+>                               
 >       obj.network()
 >       console.log(obj)
 >   ```
@@ -981,7 +984,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >
 >   ```js
 >     var name = 'window'
->                     
+>                           
 >     /*
 >       1.创建一个空的对象
 >       2.将这个空的对象赋值给this
@@ -1004,14 +1007,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         }
 >       }
 >     }
->                     
+>                           
 >     var person1 = new Person('person1')
 >     var person2 = new Person('person2')
->                     
+>                           
 >     person1.obj.foo1()() // 默认绑定: window
 >     person1.obj.foo1.call(person2)() // 默认绑定: window
 >     person1.obj.foo1().call(person2) // 显式绑定: person2
->                     
+>                           
 >     person1.obj.foo2()() // 上层作用域查找: obj(隐式绑定)
 >     person1.obj.foo2.call(person2)() // 上层作用域查找: person2(显式绑定)
 >     person1.obj.foo2().call(person2) // 上层作用域查找: obj(隐式绑定)
@@ -1053,15 +1056,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           function foo (name, age, height) {
 >               console.log(this, name, age, height);
 >           }
->       
+>             
 >           const obj = {
 >               name: 'why'
 >           }
->       
+>             
 >   		Function.prototype.hybind = function (thisArg, ...otherArgs) {
->       
+>             
 >               thisArg = (thisArg === null || thisArg === undefined) ? window : Object(thisArg)
->       
+>             
 >               Object.defineProperty(thisArg, 'fn', {
 >                   enumerable: false,
 >                   configurable: true,
@@ -1069,15 +1072,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   value: this
 >               })
 >               return (...newArgs) => {
->       
+>             
 >                   const allArgs = [...otherArgs, ...newArgs]
->       
+>             
 >                   thisArg.fn(...allArgs)
 >               }
 >           }
->       
+>             
 >           const newFoo = foo.hybind(obj, 'hhh', 21)
->       
+>             
 >           newFoo(1.99)
 >   ```
 >
@@ -1153,7 +1156,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   }
 >               }
 >           }
->                                                   
+>                                                         
 >           const c = createCache()
 >           c.set('a', 100)
 >           console.log(c.get('a'));
@@ -1167,16 +1170,16 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           let a
 >           // 每次for循环都会创建出一个新的块级作用域
 >           for (let i = 0; i < 10; i++) {
->                                                   
+>                                                         
 >               a = document.createElement('a')
 >               a.innerHTML = i + '<br>'
 >               a.addEventListener('click', function (e) {
 >                   e.preventDefault();
 >                   alert(i)
 >               })
->                                                   
+>                                                         
 >               document.body.appendChild(a)
->                                                   
+>                                                         
 >           }
 >   ```
 >
@@ -1186,27 +1189,157 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 
 ### 3.7 输入url到显示页面的整个流程（包括整个浏览器渲染的流程）
 
-
+> * 第一步：输入url，经过DNS解析成IP地址，找到IP地址对应的服务器，发送请求获取资源（一般都是index.html文件），浏览器获取到文件后，开始解析
+> * 第二步：浏览器从上到下一行一行解析，构建DOM树，遇到CSS文件再下载，同时构建CSSOM tree，不阻塞DOM树的构建，但会阻塞render tree的构建。遇见script外部脚本会停止DOM构建，等js文件下载并执行后，再继续构建DOM树。
+> * DOM tree和CSSOM构建好后，生成render tree，在经过layout布局计算每个节点的大小和位置后，开始绘制，绘制过程中会合并图层
+> * 流程图:![](./images/页面渲染的详细流程.png)
 
 ### 3.8 V8引擎的运行原理
 
-
+> * 第一步：解析JS源代码，词法分析进行分词操作，语法分析解析成真正的JS中的语法，标记到AST抽象语法树中。
+>
+> * 第二部：经过Ignition解释器，转换成字节码，再转成机器码，CPU执行机器码对应的指令。同时收集TurboFan所需要的信息，如，类型信息。
+>
+> * 第三步：若函数多次调用，会被标记成热点函数，将热点函数优化成对应的机器码，下次调用可以不经过ignition解释器，直接执行优化后的机器码
+>
+> * 流程图：![](./images/V8引擎执行原理.png)
+>
+>   
 
 ### 3.9 JS运行原理流程（包括作用域链）
 
+ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作用域。
+
+> * 第一步：执行全局代码前，会创建GO全局对象，浏览器环境中就是window对象，并且在执行上下文栈中，创建全局执行上下文，每个执行上下文都需要绑定一个VO对象，全局代码中var定义的变量和定义的函数都会放在VO对象中，即window对象中，全局上下文绑定的VO对象就是GO对象。这些全局中的代码，会在这些东西准备好后再执行。
+>
+> * 第二步：若有函数需要执行，则在执行函数前，在执行上下文栈中，创建函数执行上下文，并且也会绑定一个VO对象，这个VO对象就是AO对象。这个AO对象会使用arguments作为初始化，并且初始值是传入的参数，这个AO对象会作为执行上下文的VO来存放变量的初始化。这些函数体中的代码，会在这些东西准备好后再执行。
+>
+> * 第三步：每个执行上下文中的代码执行完，就会弹出执行上下文栈。
+>
+> * 补充：作用域链保存在函数对象里面，函数对象被创建时就有了自己得作用域链。作用域链来自于执行得代码，如果执行的是全局代码，作用域链里面只有GO，如果执行函数代码，函数创建的那一刻，它已经知道了自己的作用域链，它会在你执行函数的时候，把作用域链赋值给执行上下文，告诉执行上下文，我的作用域链就是这个东西，你待会按照我这么个顺序查找就行了。
+>
+>   
+>
+> * 这里注意：VO对象中函数定义使用的标识符应该放在变量之前，下面的图这点不对，因为函数比变量优先提升，且函数提升时，会直接创建函数对象，变量不提升值，默认值为undefined
+>
+> * 流程图：![](./images/全局代码执行前.png)
+>
+> * ![](./images/全局代码执行后.png)
+>
+> * ![](./images/函数代码执行前.png)
+>
+> * ![](./images/函数代码执行后.png)
 
 
-### 3.10 内存管理—JS引擎GC机制
 
 
 
-### 3.11闭包
+### 3.10 作用域提升面试题
+
+> * 第一题
+>
+>   ```js
+>           var n = 100
+>           function foo () {
+>               n = 200
+>           }
+>           foo()
+>
+>           console.log(n); // 200
+>   ```
+>
+> * 第二题
+>
+>   ```js
+>           function foo () {
+>               console.log(n); // underfined
+>               var n = 200
+>               console.log(n); // 200
+>           }
+>           var n = 100
+>           foo()
+>
+> 
+>
+> * 第三题
+>
+>   ```js
+>             var n = 100
+>             function foo1 () {
+>                 console.log(n); // 2. 100
+>             }
+>     
+>             function foo2 () {
+>                 var n = 200
+>                 console.log(n); //1. 200
+>                 foo1()
+>             }
+>     
+>             foo2()
+>             console.log(n); // 3. 100
+>   ```
+>
+>   
+>
+> * 第四题
+>
+>   ```js
+>           var a = 200
+>
+>           function foo () {
+>               console.log(a); // undefined
+>               return
+>               var a = 100
+>           }
+>
+>           foo()
+>   ```
+>
+> * 第五题
+>
+>   ```js
+>           function foo () {
+>               var a = b = 100
+>               // 相当于下面这个
+>               // var a = 100
+>               // b = 100
+>           }
+>     
+>           foo()
+>     
+>           console.log(a); // 报错
+>           console.log(b); // 100
+>   ```
+>
+> 
+
+### 3.11 内存管理—JS引擎GC机制
+
+> 主要GC算法
+>
+> * 引用计数法
+>
+>   ![](./images/引用计数.png)
+>
+>   
+>
+> * 标记清楚法
+>
+>   流程图：![](./images/标记清除.png)
+>
+> * GC算法-其他算法优化补充
+>
+>   ![](./images/GC算法-其他算法优化补充.png)
 
 
 
+### 3.12闭包
+
+![](./images/闭包的访问过程.png)
 
 
-### 3.12题目
+
+### 3.13题目
 
 > * this的不同应用场景，如何取值？
 > * 手写bind函数
@@ -1250,20 +1383,20 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           function loading (src) {
 >               return new Promise((resolve, reject) => {
 >                   const img = document.createElement('img')
->               
+>                     
 >                   img.onload = () => {
 >                       resolve(img)
 >                   }
->               
+>                     
 >                   img.onerror = () => {
 >                       const error = new Error(`图片加载异常 ${src}`)
 >                       reject(error)
 >                   }
->               
+>                     
 >                   img.src = src
 >               })
 >           }
->               
+>                     
 >           const url1 = 'https://img3.mukewang.com/szimg/64b0cc640982df8805400304.png'
 >           const url2 = 'https://img3.mukewang.com/szimg/64b9f4fa09cde80805400304.png'
 >           loading(url1).then(img1 => {
@@ -1417,7 +1550,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   console.log(error); // try..catch相当于Promise的catch
 >               }
 >           })()
->                                         
+>                                               
 >   ```
 >
 > 
@@ -1461,15 +1594,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               await async3()
 >               console.log('async1 end 2'); // 7
 >           }
->                     
+>                           
 >           async function async2 () {
 >               console.log('async2'); // 3
 >           }
->                     
+>                           
 >           async function async3 () {
 >               console.log('async3'); // 6
 >           }
->                     
+>                           
 >           console.log('script start'); // 1
 >           async1()
 >           console.log('script end'); // 4
@@ -1511,7 +1644,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 > * 宏任务有哪些？微任务有哪些？微任务触发时机更早
 > * 微任务，宏任务和DOM渲染的关系
 > * 微任务，宏任务和DOM渲染，在Event Loop的过程
-> * 图片：xxx
+> * 图片：![](./images/事件循环.png)
 
 
 
@@ -1537,7 +1670,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               const c = await Promise.reject(300)
 >               console.log('c', c);
 >               console.log('end');
->                                                                                                                           
+>                                                                                                                                             
 >           })() // 执行完毕，打印什么内容
 >                // 打印至b就因reject报错，而结束
 >   ```
@@ -1548,25 +1681,25 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               await async2()
 >               console.log('async1 end'); // 6
 >           }
->                                           
+>                                                 
 >           async function async2 () {
 >               console.log('async2'); // 3
 >           }
 >           console.log('script start'); // 1
->                                           
+>                                                 
 >           setTimeout(function () {
 >               console.log('setTimeout'); // 8
 >           }, 0)
->                                           
+>                                                 
 >           async1()
->                                           
+>                                                 
 >           new Promise(function (resolve) {
 >               console.log('promise1'); // 4
 >               resolve()
 >           }).then(() => {
 >               console.log('promise2'); // 7
 >           })
->                                           
+>                                                 
 >           console.log('script end'); // 5
 >   ```
 
@@ -1594,7 +1727,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                           this.value = value
 >                           this.resolveCallbacks.forEach(fn => fn() )
 >                       }
->                                         
+>                                               
 >                   }
 >                   const rejectHandler = (reason) => {
 >                       if (this.state === 'pending') {
@@ -1602,14 +1735,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                           this.reason = reason
 >                           this.rejectCallbacks.forEach(fn => fn() )
 >                       }
->                                         
+>                                               
 >                   }
 >                   try {
 >                       fn(resolveHandler, rejectHandler)
 >                   } catch (error) {
 >                       rejectHandler(error)
 >                   }
->                                         
+>                                               
 >               }
 >               then (fn1, fn2) {
 >                   fn1 = typeof fn1 === 'function' ? fn1 : v => v
@@ -1636,7 +1769,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                       })
 >                       // console.log(p1 === this);
 >                       return p1
->                                         
+>                                               
 >                   }
 >                   if (this.state === 'fulfilled') {
 >                       const p1 = new MyPromise((resolve, reject) => {
@@ -1660,23 +1793,23 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                       })
 >                       return p1
 >                   }
->                                         
+>                                               
 >               }
 >               catch (fn) {
 >                   return this.then(null, fn)
 >               }
 >           }
->                                         
+>                                               
 >           // Promise的静态方法
->                                         
+>                                               
 >           MyPromise.resolve = function (value) {
 >               return new MyPromise((resolve, reject) => { resolve(value) })
 >           }
->                                         
+>                                               
 >           MyPromise.reject = function (reason) {
 >               return new MyPromise((resolve, reject) => { reject(reason) })
 >           }
->                                         
+>                                               
 >           // 传入promise数组，等待所有的都fulfilled之后，返回新promise，包含前面的所有结果
 >           MyPromise.all = function (promiseList = []) {
 >               const p1 = new MyPromise((resolve, reject) => {
@@ -1699,7 +1832,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               })
 >               return p1
 >           }
->                                         
+>                                               
 >           // 传入promise数组，只要有一个fulfilled，即可返回新promise
 >           MyPromise.race = function (promiseList = []) {
 >               let resolved = false
@@ -1808,19 +1941,19 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >
 >   ```js
 >             const listNode = document.getElementById('list')
->                     
+>                           
 >             // 创建一个文档碎片,此时还没有插入到DOM树中
 >             const frag = document.createDocumentFragment()
->                     
+>                           
 >             // 执行插入
 >             for (let i = 0; i < 10; i++) {
 >                 const li = document.createElement('li')
 >                 li.innerHTML = `list item ${i}`
->                     
+>                           
 >                 // 先插入文档碎片中,其游离在DOM树之外
 >                 frag.appendChild(li)
 >             }
->                     
+>                           
 >             // 都完成之后,再插入到DOM树中
 >             listNode.appendChild(frag)
 >   ```
@@ -1901,7 +2034,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   fn = selector
 >                   selector = null
 >               }
->             
+>                   
 >               elem.addEventListener(type, e => {
 >                   const target = e.target
 >                   // 事件代理
@@ -1921,7 +2054,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >               event.preventDefault()
 >               alert(this.innerHTML)
 >           })
->             
+>                   
 >           // 事件代理
 >           const div3 = document.getElementById('div3')
 >           bindEvent(div3, 'click', 'a', function (event) {
@@ -2237,7 +2370,7 @@ ajax('/data/test.json')
 
 ### 1.5 http-强制缓存(9.7)
 
-> * 图片：xxx
+> * 图片：![](./images/强制缓存.jpg)
 > * Cache-Control由服务端设置，控制强制缓存的逻辑，在Response Headers中
 >   * 例如 Cache-Control: max-age=xxx(单位是秒)
 > * Cache-Control的值
@@ -2253,7 +2386,7 @@ ajax('/data/test.json')
 
 ### 1.6 http-协商缓存(9.8)
 
-> * 图片：xxx
+> * 图片：![](./images/协商缓存.jpg)
 > * 协商缓存
 >   * 服务端缓存策略
 >   * 服务端判断客户端资源，是否和服务端资源一样
@@ -2273,7 +2406,7 @@ ajax('/data/test.json')
 >     * 会优先使用Etag
 >     * Last-Modified智能精确到秒级
 >     * 如果资源被重新生成，而内容不变，则Etag更准确
-> * http缓存-流程图：xxx
+> * http缓存-流程图：![](./images/缓存.jpg)
 
 
 
