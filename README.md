@@ -239,28 +239,28 @@
 >           /* 1.order */
 >           /* 定义项目的排列顺序,默认值为0,值越小,排列越靠前 */
 >           /* order:0 */
->                           
+>                             
 >           /* 剩余空间=总空间-固定空间(设置的width) */
->                           
+>                             
 >           /* 2.flex-grow */
 >           /* 定义项目的放大比例,默认为0,即存在剩余空间也不放大 */
 >           /* 项目定义的值都相同,则等分剩余空间,即按所占比例分配 */
 >           /* flow-grow:0 */
->                           
+>                             
 >           /* 3.flex-shrink */
 >           /* 定义项目的缩小比例,默认为1,即空间不够时,按等比例缩小,值为0不缩小 */
 >           /* flex-shrink:1 */
->                           
+>                             
 >           /* 4.flex-basis */
 >           /* 定义分配多余空间前,项目空间的大小,相当于width */
 >           /* flex-basis:auto(默认值,即项目本来的大小)/<length> */
->                           
+>                             
 >           /* 5.flex */
 >           /* flex-grow,flex-shrink,flex-basis的合写 */
 >           /* 默认值 flex:0 1 auto */
 >           /* 两个快捷值:auto(1 1 auto)和none(0 0 auto) */
 >           /* flex:flex-grow flex-shrink flex-basis */
->                           
+>                             
 >           /* 6.align-self */
 >           /* 允许单个项目有不同于其他项目,在交叉轴上的对齐方式,可覆盖align-items */
 >           /* 默认值为auto,表示继承父元素的align-items属性,如果没有父元素,则等同于stretch */
@@ -681,12 +681,12 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >             function fn () {
 >                 console.log(a);
 >             }
->                                                                                                                         
+>                                                                                                                             
 >             function print (fn) {
 >                 let a = 200;
 >                 fn()
 >             }
->                                                                                                                         
+>                                                                                                                             
 >             print(fn)
 >     ```
 >
@@ -837,7 +837,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         var results = ["abc", "cba", "nba"]
 >         callbackFn(results)
 >       }
->                                   
+>                                     
 >       // 实际操作的位置(业务)
 >       var obj = {
 >         names: [],
@@ -847,14 +847,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           // request("/names", function(res) {
 >           //   _this.names = [].concat(res)
 >           // })
->                                   
+>                                     
 >           // 2.箭头函数写法
 >           request("/names", (res) => {
 >             this.names = [].concat(res)
 >           })
 >         }
 >       }
->                                   
+>                                     
 >       obj.network()
 >       console.log(obj)
 >   ```
@@ -984,7 +984,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >
 >   ```js
 >     var name = 'window'
->                               
+>                                 
 >     /*
 >       1.创建一个空的对象
 >       2.将这个空的对象赋值给this
@@ -1007,14 +1007,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         }
 >       }
 >     }
->                               
+>                                 
 >     var person1 = new Person('person1')
 >     var person2 = new Person('person2')
->                               
+>                                 
 >     person1.obj.foo1()() // 默认绑定: window
 >     person1.obj.foo1.call(person2)() // 默认绑定: window
 >     person1.obj.foo1().call(person2) // 显式绑定: person2
->                               
+>                                 
 >     person1.obj.foo2()() // 上层作用域查找: obj(隐式绑定)
 >     person1.obj.foo2.call(person2)() // 上层作用域查找: person2(显式绑定)
 >     person1.obj.foo2().call(person2) // 上层作用域查找: obj(隐式绑定)
@@ -1056,15 +1056,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           function foo (name, age, height) {
 >               console.log(this, name, age, height);
 >           }
->                 
+>                   
 >           const obj = {
 >               name: 'why'
 >           }
->                 
+>                   
 >   		Function.prototype.hybind = function (thisArg, ...otherArgs) {
->                 
+>                   
 >               thisArg = (thisArg === null || thisArg === undefined) ? window : Object(thisArg)
->                 
+>                   
 >               Object.defineProperty(thisArg, 'fn', {
 >                   enumerable: false,
 >                   configurable: true,
@@ -1072,15 +1072,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   value: this
 >               })
 >               return (...newArgs) => {
->                 
+>                   
 >                   const allArgs = [...otherArgs, ...newArgs]
->                 
+>                   
 >                   thisArg.fn(...allArgs)
 >               }
 >           }
->                 
+>                   
 >           const newFoo = foo.hybind(obj, 'hhh', 21)
->                 
+>                   
 >           newFoo(1.99)
 >   ```
 >
@@ -1156,7 +1156,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   }
 >               }
 >           }
->                                                             
+>                                                               
 >           const c = createCache()
 >           c.set('a', 100)
 >           console.log(c.get('a'));
@@ -1170,16 +1170,16 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           let a
 >           // 每次for循环都会创建出一个新的块级作用域
 >           for (let i = 0; i < 10; i++) {
->                                                             
+>                                                               
 >               a = document.createElement('a')
 >               a.innerHTML = i + '<br>'
 >               a.addEventListener('click', function (e) {
 >                   e.preventDefault();
 >                   alert(i)
 >               })
->                                                             
+>                                                               
 >               document.body.appendChild(a)
->                                                             
+>                                                               
 >           }
 >   ```
 >
@@ -1268,13 +1268,13 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >             function foo1 () {
 >                 console.log(n); // 2. 100
 >             }
->         
+>           
 >             function foo2 () {
 >                 var n = 200
 >                 console.log(n); //1. 200
 >                 foo1()
 >             }
->         
+>           
 >             foo2()
 >             console.log(n); // 3. 100
 >   ```
@@ -1304,9 +1304,9 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               // var a = 100
 >               // b = 100
 >           }
->         
+>           
 >           foo()
->         
+>           
 >           console.log(a); // 报错
 >           console.log(b); // 100
 >   ```
@@ -1383,20 +1383,20 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >           function loading (src) {
 >               return new Promise((resolve, reject) => {
 >                   const img = document.createElement('img')
->                         
+>                           
 >                   img.onload = () => {
 >                       resolve(img)
 >                   }
->                         
+>                           
 >                   img.onerror = () => {
 >                       const error = new Error(`图片加载异常 ${src}`)
 >                       reject(error)
 >                   }
->                         
+>                           
 >                   img.src = src
 >               })
 >           }
->                         
+>                           
 >           const url1 = 'https://img3.mukewang.com/szimg/64b0cc640982df8805400304.png'
 >           const url2 = 'https://img3.mukewang.com/szimg/64b9f4fa09cde80805400304.png'
 >           loading(url1).then(img1 => {
@@ -1529,15 +1529,17 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               const data = await p1 // await相当于Promise的then
 >               console.log(data); // 300
 >           })()
->
->
-> ```js
->       !(async function () {
->           const data = await 400 // 相当于 await Promise.resolve(400)
->           console.log('data', data); // 400
->       })()
-> 
-> ```
+>   ```
+>   
+>   ```js
+>         !(async function () {
+>             const data = await 400 // 相当于 await Promise.resolve(400)
+>             console.log('data', data); // 400
+>         })()
+>   ```
+>   
+>   
+>   
 > * try...catch可捕获异常，代替了Promise的catch
 >
 >   ```js
@@ -1550,7 +1552,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                   console.log(error); // try..catch相当于Promise的catch
 >               }
 >           })()
->                                                   
+>   
 >   ```
 >
 > 
@@ -1594,15 +1596,15 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               await async3()
 >               console.log('async1 end 2'); // 7
 >           }
->                               
+>                                 
 >           async function async2 () {
 >               console.log('async2'); // 3
 >           }
->                               
+>                                 
 >           async function async3 () {
 >               console.log('async3'); // 6
 >           }
->                               
+>                                 
 >           console.log('script start'); // 1
 >           async1()
 >           console.log('script end'); // 4
@@ -1652,60 +1654,62 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 ### 2.7 JS异步面试题
 
 > * 面试题一
->       
->       ```js
->           async function fn () {
->               return 100
->           }
->           !(async function () {
->               const a = fn() // Promise对象
->           const b = await fn() // 100
->           })()
->       ```
->       
+>
+>   ```js
+>       async function fn () {
+>           return 100
+>       }
+>       !(async function () {
+>           const a = fn() // Promise对象
+>       const b = await fn() // 100
+>       })()
+>   ```
+>
+>   
+>
 > * 面试题二
->       
->       ```js
->           (async function () {
->               console.log('start');
->               const a = await 100
->               console.log('a', a);
->               const b = await Promise.resolve(200)
->               console.log('b', b);
->               const c = await Promise.reject(300)
->               console.log('c', c);
->               console.log('end');
->       
->       })() // 执行完毕，打印什么内容
->                // 打印至b就因reject报错，而结束
->       ```
->       
+>
+>   ```js
+>       (async function () {
+>           console.log('start');
+>           const a = await 100
+>           console.log('a', a);
+>           const b = await Promise.resolve(200)
+>           console.log('b', b);
+>           const c = await Promise.reject(300)
+>           console.log('c', c);
+>           console.log('end');
+>
+>   })() // 执行完毕，打印什么内容
+>            // 打印至b就因reject报错，而结束
+>   ```
+>
 > * 面试题三
->       
->       ```js
->           console.log("script start")
->       
->           setTimeout(function () {
+>
+>   ```js
+>       console.log("script start")
+>   
+>       setTimeout(function () {
 >         console.log("setTimeout1");
->             new Promise(function (resolve) {
->               resolve();
->             }).then(function () {
->               new Promise(function (resolve) {
->             resolve();
->               }).then(function () {
->                 console.log("then4");
->               });
->           console.log("then2");
->             });
->       });
->       
+>         new Promise(function (resolve) {
+>           resolve();
+>         }).then(function () {
 >           new Promise(function (resolve) {
->             console.log("promise1");
 >             resolve();
 >           }).then(function () {
->             console.log("then1");
+>             console.log("then4");
+>           });
+>           console.log("then2");
+>         });
 >       });
->       
+>   
+>       new Promise(function (resolve) {
+>         console.log("promise1");
+>         resolve();
+>       }).then(function () {
+>         console.log("then1");
+>       });
+>   
 >       setTimeout(function () {
 >         console.log("setTimeout2");
 >       });
@@ -1723,38 +1727,50 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >       });
 >   
 >       console.log("script end")
+>   
+>   	// 1.script start
+>       // 2.promise1
+>       // 3.2
+>       // 4.script end
+>       // 5.then1
+>       // 6.queueMicrotask1
+>       // 7.then3
+>       // 8.setTimeout1
+>       // 9.then2
+>       // 10.then4
+>       // 11.setTimeout2
 >   ```
 >   
 >   
->   
+>
 > * 面试题四
->       
->       ```js
->           async function async1 () {
->               console.log('async1 start'); // 2
->               await async2()
->           console.log('async1 end'); // 6
->           }
->       
->           async function async2 () {
->               console.log('async2'); // 3
+>
+>   ```js
+>       async function async1 () {
+>           console.log('async1 start'); // 2
+>           await async2()
+>       	console.log('async1 end'); // 6
 >       }
->           console.log('script start'); // 1
->       
->           setTimeout(function () {
->           console.log('setTimeout'); // 8
->           }, 0)
 >   
->           async1()
->       
->           new Promise(function (resolve) {
->               console.log('promise1'); // 4
->               resolve()
->           }).then(() => {
->           console.log('promise2'); // 7
->           })
+>       async function async2 () {
+>           console.log('async2'); // 3
+>   	}
+>       console.log('script start'); // 1
 >   
->       console.log('script end'); // 5
+>       setTimeout(function () {
+>       	console.log('setTimeout'); // 8
+>       }, 0)
+>   
+>       async1()
+>   
+>       new Promise(function (resolve) {
+>           console.log('promise1'); // 4
+>           resolve()
+>       }).then(() => {
+>       	console.log('promise2'); // 7
+>       })
+>   
+>   	console.log('script end'); // 5
 >   ```
 
 
@@ -1781,7 +1797,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                           this.value = value
 >                           this.resolveCallbacks.forEach(fn => fn() )
 >                       }
->                                                   
+>                                                     
 >                   }
 >                   const rejectHandler = (reason) => {
 >                       if (this.state === 'pending') {
@@ -1789,14 +1805,14 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                           this.reason = reason
 >                           this.rejectCallbacks.forEach(fn => fn() )
 >                       }
->                                                   
+>                                                     
 >                   }
 >                   try {
 >                       fn(resolveHandler, rejectHandler)
 >                   } catch (error) {
 >                       rejectHandler(error)
 >                   }
->                                                   
+>                                                     
 >               }
 >               then (fn1, fn2) {
 >                   fn1 = typeof fn1 === 'function' ? fn1 : v => v
@@ -1823,7 +1839,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                       })
 >                       // console.log(p1 === this);
 >                       return p1
->                                                   
+>                                                     
 >                   }
 >                   if (this.state === 'fulfilled') {
 >                       const p1 = new MyPromise((resolve, reject) => {
@@ -1847,23 +1863,23 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                       })
 >                       return p1
 >                   }
->                                                   
+>                                                     
 >               }
 >               catch (fn) {
 >                   return this.then(null, fn)
 >               }
 >           }
->                                                   
+>                                                     
 >           // Promise的静态方法
->                                                   
+>                                                     
 >           MyPromise.resolve = function (value) {
 >               return new MyPromise((resolve, reject) => { resolve(value) })
 >           }
->                                                   
+>                                                     
 >           MyPromise.reject = function (reason) {
 >               return new MyPromise((resolve, reject) => { reject(reason) })
 >           }
->                                                   
+>                                                     
 >           // 传入promise数组，等待所有的都fulfilled之后，返回新promise，包含前面的所有结果
 >           MyPromise.all = function (promiseList = []) {
 >               const p1 = new MyPromise((resolve, reject) => {
@@ -1886,7 +1902,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               })
 >               return p1
 >           }
->                                                   
+>                                                     
 >           // 传入promise数组，只要有一个fulfilled，即可返回新promise
 >           MyPromise.race = function (promiseList = []) {
 >               let resolved = false
@@ -1995,19 +2011,19 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >
 >   ```js
 >             const listNode = document.getElementById('list')
->                               
+>                                 
 >             // 创建一个文档碎片,此时还没有插入到DOM树中
 >             const frag = document.createDocumentFragment()
->                               
+>                                 
 >             // 执行插入
 >             for (let i = 0; i < 10; i++) {
 >                 const li = document.createElement('li')
 >                 li.innerHTML = `list item ${i}`
->                               
+>                                 
 >                 // 先插入文档碎片中,其游离在DOM树之外
 >                 frag.appendChild(li)
 >             }
->                               
+>                                 
 >             // 都完成之后,再插入到DOM树中
 >             listNode.appendChild(frag)
 >   ```
@@ -2088,7 +2104,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                   fn = selector
 >                   selector = null
 >               }
->                       
+>                         
 >               elem.addEventListener(type, e => {
 >                   const target = e.target
 >                   // 事件代理
@@ -2108,7 +2124,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               event.preventDefault()
 >               alert(this.innerHTML)
 >           })
->                       
+>                         
 >           // 事件代理
 >           const div3 = document.getElementById('div3')
 >           bindEvent(div3, 'click', 'a', function (event) {
