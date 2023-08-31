@@ -239,28 +239,28 @@
 >           /* 1.order */
 >           /* 定义项目的排列顺序,默认值为0,值越小,排列越靠前 */
 >           /* order:0 */
->                             
+>                                 
 >           /* 剩余空间=总空间-固定空间(设置的width) */
->                             
+>                                 
 >           /* 2.flex-grow */
 >           /* 定义项目的放大比例,默认为0,即存在剩余空间也不放大 */
 >           /* 项目定义的值都相同,则等分剩余空间,即按所占比例分配 */
 >           /* flow-grow:0 */
->                             
+>                                 
 >           /* 3.flex-shrink */
 >           /* 定义项目的缩小比例,默认为1,即空间不够时,按等比例缩小,值为0不缩小 */
 >           /* flex-shrink:1 */
->                             
+>                                 
 >           /* 4.flex-basis */
 >           /* 定义分配多余空间前,项目空间的大小,相当于width */
 >           /* flex-basis:auto(默认值,即项目本来的大小)/<length> */
->                             
+>                                 
 >           /* 5.flex */
 >           /* flex-grow,flex-shrink,flex-basis的合写 */
 >           /* 默认值 flex:0 1 auto */
 >           /* 两个快捷值:auto(1 1 auto)和none(0 0 auto) */
 >           /* flex:flex-grow flex-shrink flex-basis */
->                             
+>                                 
 >           /* 6.align-self */
 >           /* 允许单个项目有不同于其他项目,在交叉轴上的对齐方式,可覆盖align-items */
 >           /* 默认值为auto,表示继承父元素的align-items属性,如果没有父元素,则等同于stretch */
@@ -375,56 +375,166 @@
 
 ### 1.3深拷贝
 
+> * 判断是否是对象
+>
+> * 数组和对象的深拷贝
+>
+> * 函数
+>
+> * set
+>
+> * symbol
+>
+>   * symbol作为值
+>   * symbol作为键
+>
+>   ```js
+>           function isObject (obj) {
+>               if (obj !== null && (typeof obj === 'object' || typeof obj === 'function')) {
+>                   return true
+>               }
+>           }
+>   
+>   
+>           function deepClone (originValue, map = new WeakMap()) {
+>   
+>   
+>   
+>               // 区分symbol值，使得拷贝出来的symbol值不一样
+>               if (typeof originValue === 'symbol') {
+>                   const newSymbolKey = Symbol(originValue.description)
+>                   return newSymbolKey
+>               }
+>   
+>   
+>               // 判断是否是对象或函数类型
+>               if (!isObject(originValue)) {
+>                   return originValue
+>               }
+>   
+>   
+>               // 区分set集合，原因：for in不能遍历set集合，而且set集合运用typeof 得到的是'object'
+>               if (originValue instanceof Set) {
+>                   const newSet = new Set()
+>                   for (const value of originValue) {
+>                       newSet.add(value)
+>                   }
+>                   return newSet
+>               }
+>   
+>               // 函数类型不需要深拷贝
+>               if (typeof originValue === 'function') {
+>                   return originValue
+>               }
+>   
+>               // 解决循环引用
+>               if (map.get(originValue)) {
+>                   return map.get(originValue)
+>               }
+>   
+>               // 区分数组或对象，遍历普通的key
+>               const newObj = Array.isArray(originValue) ? [] : {}
+>               map.set(originValue, newObj)
+>               for (const key in originValue) {
+>                   if (Object.hasOwn(originValue, key)) {
+>                       newObj[key] = deepClone(originValue[key], map)
+>                   }
+>   
+>               }
+>   
+>               // 单独遍历symbol，原因：for in无法遍历出值为symbol的键名
+>               const symbolKeys = Object.getOwnPropertySymbols(originValue)
+>               for (const symbolKey of symbolKeys) {
+>                   newObj[Symbol(symbolKey.description)] = deepClone(originValue[symbolKey])
+>               }
+>   
+>               return newObj
+>           }
+>   ```
+>
+>   
+
+
+
+
+
+### (补充)手写事件总线
+
 ```js
-        function deepClone (obj = {}) {
-            // 判断是否是值类型
-            if (typeof obj !== 'object' || obj == null) {
-                return obj
+        class EventBus {
+            constructor() {
+                this.eventMap = {}
             }
 
-            // 判断要拷贝的是对象还是数组
-            let result
-            if (obj instanceof Array) {
-                result = []
-            } else {
-                result = {}
-            }
-
-
-            for (let key in obj) {
-                // 排除原型链上的属性
-                if (obj.hasOwnProperty(key)) {
-                    result[key] = deepClone(obj[key])
+            on (eventName, eventFn) {
+                const eventFns = this.eventMap[eventName]
+                if (!eventFns) {
+                    this.eventMap[eventName] = []
                 }
+                this.eventMap[eventName].push(eventFn)
+
             }
+            emit (eventName, ...args) {
+                const eventFns = this.eventMap[eventName]
+                if (!eventFns) return
+                eventFns.forEach(fn => fn(...args))
+            }
+            off (eventName, eventFn) {
+                const eventFns = this.eventMap[eventName]
+                // console.log(eventFns, eventFns.length);
+                if (!eventFns) return
 
-            return result
 
+                // 删除多个，即将数组中的eventFn全部删除
+                // for (let i = 0; i < eventFn.length; i++) {
+                //     const index = eventFns.findIndex((fn) => fn === eventFn)
+                //     if (index !== -1) {
+                //         eventFns.splice(index, 1)
+                //     }
+                // }
+
+                // 删除一个
+                for (let i = 0; i < eventFns.length; i++) {
+
+                    if (eventFns[i] === eventFn) {
+                        eventFns.splice(i, 1)
+                        break
+                    }
+                }
+
+
+                // 如果eventFns已经清空了
+                if (eventFns.length === 0) {
+                    delete this.eventMap[eventName]
+                }
+
+            }
         }
-        const arr1 = [1, 2, [5, 6, 7], 4, null]
-        const arr2 = deepClone(arr1)
 
-        arr2[0] = 0
-        console.log('arr1', arr1);
-        console.log('arr2', arr2);
-        console.log(arr1 === arr2);
-        const obj1 = {
-            name: 'hhh',
-            age: '18',
-            school: {
-                one: 'xiaoxue',
-                two: 'daxue'
-            },
-            h: null
+
+        const eventBus = new EventBus()
+        const clickFn = (name, age, height) => {
+            console.log('navclick被触发02', name, age, height);
         }
-        const obj2 = deepClone(obj1)
-        obj2.age = 20
-        obj2.h = 1
-        console.log('obj1', obj1);
-        console.log('obj2', obj2);
-        console.log(obj1 === obj2);
 
+        eventBus.on('navclick', (name, age, height) => {
+            console.log('navclick被触发01', name, age, height);
+        })
+        eventBus.on('navclick', clickFn)
+        eventBus.on('navclick', (name, age, height) => {
+            console.log('navclick被触发01', name, age, height);
+        })
+        eventBus.on('navclick', clickFn)
+        eventBus.on('navclick', clickFn)
+
+        eventBus.emit('navclick', 'hhh', 18, 1.88)
+
+        eventBus.off('navclick', clickFn)
+        console.log('------------------');
+        eventBus.emit('navclick', 'hhh', 18, 1.88)
 ```
+
+
 
 
 
@@ -681,12 +791,12 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >             function fn () {
 >                 console.log(a);
 >             }
->                                                                                                                             
+>                                                                                                                                     
 >             function print (fn) {
 >                 let a = 200;
 >                 fn()
 >             }
->                                                                                                                             
+>                                                                                                                                     
 >             print(fn)
 >     ```
 >
@@ -837,7 +947,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         var results = ["abc", "cba", "nba"]
 >         callbackFn(results)
 >       }
->                                     
+>                                         
 >       // 实际操作的位置(业务)
 >       var obj = {
 >         names: [],
@@ -847,14 +957,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           // request("/names", function(res) {
 >           //   _this.names = [].concat(res)
 >           // })
->                                     
+>                                         
 >           // 2.箭头函数写法
 >           request("/names", (res) => {
 >             this.names = [].concat(res)
 >           })
 >         }
 >       }
->                                     
+>                                         
 >       obj.network()
 >       console.log(obj)
 >   ```
@@ -984,7 +1094,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >
 >   ```js
 >     var name = 'window'
->                                 
+>                                     
 >     /*
 >       1.创建一个空的对象
 >       2.将这个空的对象赋值给this
@@ -1007,14 +1117,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         }
 >       }
 >     }
->                                 
+>                                     
 >     var person1 = new Person('person1')
 >     var person2 = new Person('person2')
->                                 
+>                                     
 >     person1.obj.foo1()() // 默认绑定: window
 >     person1.obj.foo1.call(person2)() // 默认绑定: window
 >     person1.obj.foo1().call(person2) // 显式绑定: person2
->                                 
+>                                     
 >     person1.obj.foo2()() // 上层作用域查找: obj(隐式绑定)
 >     person1.obj.foo2.call(person2)() // 上层作用域查找: person2(显式绑定)
 >     person1.obj.foo2().call(person2) // 上层作用域查找: obj(隐式绑定)
@@ -1056,15 +1166,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           function foo (name, age, height) {
 >               console.log(this, name, age, height);
 >           }
->                   
+>                       
 >           const obj = {
 >               name: 'why'
 >           }
->                   
+>                       
 >   		Function.prototype.hybind = function (thisArg, ...otherArgs) {
->                   
+>                       
 >               thisArg = (thisArg === null || thisArg === undefined) ? window : Object(thisArg)
->                   
+>                       
 >               Object.defineProperty(thisArg, 'fn', {
 >                   enumerable: false,
 >                   configurable: true,
@@ -1072,15 +1182,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   value: this
 >               })
 >               return (...newArgs) => {
->                   
+>                       
 >                   const allArgs = [...otherArgs, ...newArgs]
->                   
+>                       
 >                   thisArg.fn(...allArgs)
 >               }
 >           }
->                   
+>                       
 >           const newFoo = foo.hybind(obj, 'hhh', 21)
->                   
+>                       
 >           newFoo(1.99)
 >   ```
 >
@@ -1156,7 +1266,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   }
 >               }
 >           }
->                                                               
+>                                                                   
 >           const c = createCache()
 >           c.set('a', 100)
 >           console.log(c.get('a'));
@@ -1170,16 +1280,16 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           let a
 >           // 每次for循环都会创建出一个新的块级作用域
 >           for (let i = 0; i < 10; i++) {
->                                                               
+>                                                                   
 >               a = document.createElement('a')
 >               a.innerHTML = i + '<br>'
 >               a.addEventListener('click', function (e) {
 >                   e.preventDefault();
 >                   alert(i)
 >               })
->                                                               
+>                                                                   
 >               document.body.appendChild(a)
->                                                               
+>                                                                   
 >           }
 >   ```
 >
@@ -1268,13 +1378,13 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >             function foo1 () {
 >                 console.log(n); // 2. 100
 >             }
->           
+>               
 >             function foo2 () {
 >                 var n = 200
 >                 console.log(n); //1. 200
 >                 foo1()
 >             }
->           
+>               
 >             foo2()
 >             console.log(n); // 3. 100
 >   ```
@@ -1304,9 +1414,9 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               // var a = 100
 >               // b = 100
 >           }
->           
+>               
 >           foo()
->           
+>               
 >           console.log(a); // 报错
 >           console.log(b); // 100
 >   ```
@@ -1383,20 +1493,20 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >           function loading (src) {
 >               return new Promise((resolve, reject) => {
 >                   const img = document.createElement('img')
->                           
+>                               
 >                   img.onload = () => {
 >                       resolve(img)
 >                   }
->                           
+>                               
 >                   img.onerror = () => {
 >                       const error = new Error(`图片加载异常 ${src}`)
 >                       reject(error)
 >                   }
->                           
+>                               
 >                   img.src = src
 >               })
 >           }
->                           
+>                               
 >           const url1 = 'https://img3.mukewang.com/szimg/64b0cc640982df8805400304.png'
 >           const url2 = 'https://img3.mukewang.com/szimg/64b9f4fa09cde80805400304.png'
 >           loading(url1).then(img1 => {
@@ -1552,7 +1662,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                   console.log(error); // try..catch相当于Promise的catch
 >               }
 >           })()
->   
+>       
 >   ```
 >
 > 
@@ -1596,15 +1706,15 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               await async3()
 >               console.log('async1 end 2'); // 7
 >           }
->                                 
+>                                     
 >           async function async2 () {
 >               console.log('async2'); // 3
 >           }
->                                 
+>                                     
 >           async function async3 () {
 >               console.log('async3'); // 6
 >           }
->                                 
+>                                     
 >           console.log('script start'); // 1
 >           async1()
 >           console.log('script end'); // 4
@@ -1661,7 +1771,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >       }
 >       !(async function () {
 >           const a = fn() // Promise对象
->       const b = await fn() // 100
+>       	const b = await fn() // 100
 >       })()
 >   ```
 >
@@ -1688,7 +1798,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >
 >   ```js
 >       console.log("script start")
->   
+>       
 >       setTimeout(function () {
 >         console.log("setTimeout1");
 >         new Promise(function (resolve) {
@@ -1702,32 +1812,32 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >           console.log("then2");
 >         });
 >       });
->   
+>       
 >       new Promise(function (resolve) {
 >         console.log("promise1");
 >         resolve();
 >       }).then(function () {
 >         console.log("then1");
 >       });
->   
+>       
 >       setTimeout(function () {
 >         console.log("setTimeout2");
 >       });
->   
+>       
 >       console.log(2);
->   
+>       
 >       queueMicrotask(() => {
 >         console.log("queueMicrotask1")
 >       });
->   
+>       
 >       new Promise(function (resolve) {
 >         resolve();
 >       }).then(function () {
 >         console.log("then3");
 >       });
->   
+>       
 >       console.log("script end")
->   
+>       
 >   	// 1.script start
 >       // 2.promise1
 >       // 3.2
@@ -1751,25 +1861,25 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >           await async2()
 >       	console.log('async1 end'); // 6
 >       }
->   
+>       
 >       async function async2 () {
 >           console.log('async2'); // 3
 >   	}
 >       console.log('script start'); // 1
->   
+>       
 >       setTimeout(function () {
 >       	console.log('setTimeout'); // 8
 >       }, 0)
->   
+>       
 >       async1()
->   
+>       
 >       new Promise(function (resolve) {
 >           console.log('promise1'); // 4
 >           resolve()
 >       }).then(() => {
 >       	console.log('promise2'); // 7
 >       })
->   
+>       
 >   	console.log('script end'); // 5
 >   ```
 
@@ -1797,7 +1907,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                           this.value = value
 >                           this.resolveCallbacks.forEach(fn => fn() )
 >                       }
->                                                     
+>                                                         
 >                   }
 >                   const rejectHandler = (reason) => {
 >                       if (this.state === 'pending') {
@@ -1805,14 +1915,14 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                           this.reason = reason
 >                           this.rejectCallbacks.forEach(fn => fn() )
 >                       }
->                                                     
+>                                                         
 >                   }
 >                   try {
 >                       fn(resolveHandler, rejectHandler)
 >                   } catch (error) {
 >                       rejectHandler(error)
 >                   }
->                                                     
+>                                                         
 >               }
 >               then (fn1, fn2) {
 >                   fn1 = typeof fn1 === 'function' ? fn1 : v => v
@@ -1839,7 +1949,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                       })
 >                       // console.log(p1 === this);
 >                       return p1
->                                                     
+>                                                         
 >                   }
 >                   if (this.state === 'fulfilled') {
 >                       const p1 = new MyPromise((resolve, reject) => {
@@ -1863,23 +1973,23 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                       })
 >                       return p1
 >                   }
->                                                     
+>                                                         
 >               }
 >               catch (fn) {
 >                   return this.then(null, fn)
 >               }
 >           }
->                                                     
+>                                                         
 >           // Promise的静态方法
->                                                     
+>                                                         
 >           MyPromise.resolve = function (value) {
 >               return new MyPromise((resolve, reject) => { resolve(value) })
 >           }
->                                                     
+>                                                         
 >           MyPromise.reject = function (reason) {
 >               return new MyPromise((resolve, reject) => { reject(reason) })
 >           }
->                                                     
+>                                                         
 >           // 传入promise数组，等待所有的都fulfilled之后，返回新promise，包含前面的所有结果
 >           MyPromise.all = function (promiseList = []) {
 >               const p1 = new MyPromise((resolve, reject) => {
@@ -1902,7 +2012,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               })
 >               return p1
 >           }
->                                                     
+>                                                         
 >           // 传入promise数组，只要有一个fulfilled，即可返回新promise
 >           MyPromise.race = function (promiseList = []) {
 >               let resolved = false
@@ -2011,19 +2121,19 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >
 >   ```js
 >             const listNode = document.getElementById('list')
->                                 
+>                                     
 >             // 创建一个文档碎片,此时还没有插入到DOM树中
 >             const frag = document.createDocumentFragment()
->                                 
+>                                     
 >             // 执行插入
 >             for (let i = 0; i < 10; i++) {
 >                 const li = document.createElement('li')
 >                 li.innerHTML = `list item ${i}`
->                                 
+>                                     
 >                 // 先插入文档碎片中,其游离在DOM树之外
 >                 frag.appendChild(li)
 >             }
->                                 
+>                                     
 >             // 都完成之后,再插入到DOM树中
 >             listNode.appendChild(frag)
 >   ```
@@ -2104,7 +2214,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                   fn = selector
 >                   selector = null
 >               }
->                         
+>                             
 >               elem.addEventListener(type, e => {
 >                   const target = e.target
 >                   // 事件代理
@@ -2124,7 +2234,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               event.preventDefault()
 >               alert(this.innerHTML)
 >           })
->                         
+>                             
 >           // 事件代理
 >           const div3 = document.getElementById('div3')
 >           bindEvent(div3, 'click', 'a', function (event) {
@@ -2518,7 +2628,175 @@ ajax('/data/test.json')
 
 
 
+## 六. 性能优化
 
+### 1.1手写防抖
+
+> * 基本功能实现
+>
+> * this和参数处理
+>
+> * 立即执行
+>
+> * 取消执行
+>
+> * 获取返回值
+>
+>   ```js
+>           const inputEl = document.querySelector('input')
+>           const button = document.querySelector('button')
+>   
+>   
+>           function hydebounce (fn, delay, immediate = false) {
+>               let timer = null
+>               let isImmediate = false
+>               const _debounce = function (...args) {
+>                   // 获得返回值
+>                   return new Promise((resolve, reject) => {
+>                       // 立即执行逻辑
+>                       if (immediate && !isImmediate) {
+>                           fn.apply(this, args)
+>                           isImmediate = true
+>                           return
+>                       }
+>   
+>                       if (timer) clearTimeout(timer)
+>   
+>                       timer = setTimeout(() => {
+>                           const res = fn.apply(this, args)
+>                           resolve(res)
+>                           timer = null
+>                           isImmediate = false
+>                       }, delay)
+>                   })
+>               }
+>   
+>               // 取消执行逻辑
+>               _debounce.cancel = function () {
+>                   if (timer) clearTimeout(timer)
+>                   timer = null
+>                   isImmediate = false
+>               }
+>   
+>               return _debounce
+>           }
+>   
+>           const debounce = hydebounce(function (event) {
+>               console.log('函数被执行', this.value, event);
+>               return '我是防抖'
+>           }, 2000)
+>   
+>   
+>   
+>           inputEl.oninput = debounce
+>   
+>   
+>           button.onclick = function () {
+>               debounce.cancel()
+>           }
+>   
+>   
+>           // 测试返回值
+>           debounce(111).then(res => console.log(res))
+>           debounce(222).then(res => console.log(res))
+>           debounce(333).then(res => console.log(res))
+>   ```
+>
+>   
+
+
+
+
+
+### 1.2手写节流
+
+> * 基本功能
+>
+> * this和参数处理
+>
+> * 立即执行
+>
+> * 取消执行
+>
+> * 最后一次是否执行
+>
+> * 获取返回值
+>
+>   ```js
+>           const inputEl = document.querySelector('input')
+>           const button = document.querySelector('button')
+>   
+>           function hythrottle (fn, interval, { leading = false, trailing = false } = {}) {
+>   
+>               let startTime = 0
+>               let timer = null
+>   
+>               const _throttle = function (...args) {
+>   
+>                   return new Promise((resolve, reject) => {
+>                       const nowTime = new Date().getTime()
+>   
+>                       // 第一次是否执行的逻辑
+>                       if (!leading && startTime === 0) {
+>                           startTime = nowTime
+>                       }
+>   
+>                       const waiteTime = interval - (nowTime - startTime)
+>   
+>                       // 按照一定频率执行的逻辑
+>                       if (waiteTime <= 0) {
+>                           if (timer) clearTimeout(timer)
+>                           const res = fn.apply(this, args)
+>                           resolve(res)
+>                           startTime = nowTime
+>                           timer = null
+>                           return
+>                       }
+>   
+>                       // 是否执行最后一次逻辑
+>                       if (trailing && !timer) {
+>                           timer = setTimeout(() => {
+>                               const res = fn.apply(this, args)
+>                               resolve(res)
+>                               startTime = new Date().getTime()
+>                               timer = null
+>                           }, waiteTime);
+>                       }
+>                   })
+>               }
+>   
+>               // 取消执行的逻辑
+>               _throttle.cancel = function () {
+>                   if (timer) {
+>                       clearTimeout(timer)
+>                       startTime = 0
+>                       timer = null
+>                   }
+>               }
+>   
+>               return _throttle
+>           }
+>   
+>   
+>           const throttle = hythrottle(function (event) {
+>               console.log('函数被执行了', this.value, event);
+>               return '我是返回值'
+>           }, 5000, { trailing: true })
+>   
+>           inputEl.oninput = throttle
+>   
+>   
+>           button.onclick = function () {
+>               throttle.cancel()
+>           }
+>   
+>   
+>           throttle(111).then(res => console.log(res))
+>           throttle(222).then(res => console.log(res))
+>           throttle(333).then(res => console.log(res))
+>   ```
+>
+>   
 
 
 
