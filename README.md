@@ -239,28 +239,28 @@
 >           /* 1.order */
 >           /* 定义项目的排列顺序,默认值为0,值越小,排列越靠前 */
 >           /* order:0 */
->                                 
+>                                               
 >           /* 剩余空间=总空间-固定空间(设置的width) */
->                                 
+>                                               
 >           /* 2.flex-grow */
 >           /* 定义项目的放大比例,默认为0,即存在剩余空间也不放大 */
 >           /* 项目定义的值都相同,则等分剩余空间,即按所占比例分配 */
 >           /* flow-grow:0 */
->                                 
+>                                               
 >           /* 3.flex-shrink */
 >           /* 定义项目的缩小比例,默认为1,即空间不够时,按等比例缩小,值为0不缩小 */
 >           /* flex-shrink:1 */
->                                 
+>                                               
 >           /* 4.flex-basis */
 >           /* 定义分配多余空间前,项目空间的大小,相当于width */
 >           /* flex-basis:auto(默认值,即项目本来的大小)/<length> */
->                                 
+>                                               
 >           /* 5.flex */
 >           /* flex-grow,flex-shrink,flex-basis的合写 */
 >           /* 默认值 flex:0 1 auto */
 >           /* 两个快捷值:auto(1 1 auto)和none(0 0 auto) */
 >           /* flex:flex-grow flex-shrink flex-basis */
->                                 
+>                                               
 >           /* 6.align-self */
 >           /* 允许单个项目有不同于其他项目,在交叉轴上的对齐方式,可覆盖align-items */
 >           /* 默认值为auto,表示继承父元素的align-items属性,如果没有父元素,则等同于stretch */
@@ -421,17 +421,17 @@
 >                   }
 >                   return newSet
 >               }
->   
+>                               
 >               // 函数类型不需要深拷贝
 >               if (typeof originValue === 'function') {
 >                   return originValue
 >               }
->   
+>                               
 >               // 解决循环引用
 >               if (map.get(originValue)) {
 >                   return map.get(originValue)
 >               }
->   
+>                               
 >               // 区分数组或对象，遍历普通的key
 >               const newObj = Array.isArray(originValue) ? [] : {}
 >               map.set(originValue, newObj)
@@ -439,15 +439,15 @@
 >                   if (Object.hasOwn(originValue, key)) {
 >                       newObj[key] = deepClone(originValue[key], map)
 >                   }
->   
+>                               
 >               }
->   
+>                               
 >               // 单独遍历symbol，原因：for in无法遍历出值为symbol的键名
 >               const symbolKeys = Object.getOwnPropertySymbols(originValue)
 >               for (const symbolKey of symbolKeys) {
 >                   newObj[Symbol(symbolKey.description)] = deepClone(originValue[symbolKey])
 >               }
->   
+>                               
 >               return newObj
 >           }
 >   ```
@@ -791,12 +791,12 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >             function fn () {
 >                 console.log(a);
 >             }
->                                                                                                                                     
+>                                                                                                                                                                 
 >             function print (fn) {
 >                 let a = 200;
 >                 fn()
 >             }
->                                                                                                                                     
+>                                                                                                                                                                 
 >             print(fn)
 >     ```
 >
@@ -947,7 +947,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         var results = ["abc", "cba", "nba"]
 >         callbackFn(results)
 >       }
->                                         
+>                                                       
 >       // 实际操作的位置(业务)
 >       var obj = {
 >         names: [],
@@ -957,14 +957,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           // request("/names", function(res) {
 >           //   _this.names = [].concat(res)
 >           // })
->                                         
+>                                                       
 >           // 2.箭头函数写法
 >           request("/names", (res) => {
 >             this.names = [].concat(res)
 >           })
 >         }
 >       }
->                                         
+>                                                       
 >       obj.network()
 >       console.log(obj)
 >   ```
@@ -1094,7 +1094,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >
 >   ```js
 >     var name = 'window'
->                                     
+>                                                   
 >     /*
 >       1.创建一个空的对象
 >       2.将这个空的对象赋值给this
@@ -1117,14 +1117,14 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >         }
 >       }
 >     }
->                                     
+>                                                   
 >     var person1 = new Person('person1')
 >     var person2 = new Person('person2')
->                                     
+>                                                   
 >     person1.obj.foo1()() // 默认绑定: window
 >     person1.obj.foo1.call(person2)() // 默认绑定: window
 >     person1.obj.foo1().call(person2) // 显式绑定: person2
->                                     
+>                                                   
 >     person1.obj.foo2()() // 上层作用域查找: obj(隐式绑定)
 >     person1.obj.foo2.call(person2)() // 上层作用域查找: person2(显式绑定)
 >     person1.obj.foo2().call(person2) // 上层作用域查找: obj(隐式绑定)
@@ -1166,15 +1166,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           function foo (name, age, height) {
 >               console.log(this, name, age, height);
 >           }
->                       
+>                                     
 >           const obj = {
 >               name: 'why'
 >           }
->                       
+>                                     
 >   		Function.prototype.hybind = function (thisArg, ...otherArgs) {
->                       
+>                                     
 >               thisArg = (thisArg === null || thisArg === undefined) ? window : Object(thisArg)
->                       
+>                                     
 >               Object.defineProperty(thisArg, 'fn', {
 >                   enumerable: false,
 >                   configurable: true,
@@ -1182,15 +1182,15 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   value: this
 >               })
 >               return (...newArgs) => {
->                       
+>                                     
 >                   const allArgs = [...otherArgs, ...newArgs]
->                       
+>                                     
 >                   thisArg.fn(...allArgs)
 >               }
 >           }
->                       
+>                                     
 >           const newFoo = foo.hybind(obj, 'hhh', 21)
->                       
+>                                     
 >           newFoo(1.99)
 >   ```
 >
@@ -1266,7 +1266,7 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >                   }
 >               }
 >           }
->                                                                   
+>                                                                                 
 >           const c = createCache()
 >           c.set('a', 100)
 >           console.log(c.get('a'));
@@ -1280,16 +1280,16 @@ console.log( xiaohu.__proto__ === xiaohu.prototype )
 >           let a
 >           // 每次for循环都会创建出一个新的块级作用域
 >           for (let i = 0; i < 10; i++) {
->                                                                   
+>                                                                                 
 >               a = document.createElement('a')
 >               a.innerHTML = i + '<br>'
 >               a.addEventListener('click', function (e) {
 >                   e.preventDefault();
 >                   alert(i)
 >               })
->                                                                   
+>                                                                                 
 >               document.body.appendChild(a)
->                                                                   
+>                                                                                 
 >           }
 >   ```
 >
@@ -1378,13 +1378,13 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >             function foo1 () {
 >                 console.log(n); // 2. 100
 >             }
->               
+>                             
 >             function foo2 () {
 >                 var n = 200
 >                 console.log(n); //1. 200
 >                 foo1()
 >             }
->               
+>                             
 >             foo2()
 >             console.log(n); // 3. 100
 >   ```
@@ -1414,9 +1414,9 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               // var a = 100
 >               // b = 100
 >           }
->               
+>                             
 >           foo()
->               
+>                             
 >           console.log(a); // 报错
 >           console.log(b); // 100
 >   ```
@@ -1493,20 +1493,20 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >           function loading (src) {
 >               return new Promise((resolve, reject) => {
 >                   const img = document.createElement('img')
->                               
+>                                             
 >                   img.onload = () => {
 >                       resolve(img)
 >                   }
->                               
+>                                             
 >                   img.onerror = () => {
 >                       const error = new Error(`图片加载异常 ${src}`)
 >                       reject(error)
 >                   }
->                               
+>                                             
 >                   img.src = src
 >               })
 >           }
->                               
+>                                             
 >           const url1 = 'https://img3.mukewang.com/szimg/64b0cc640982df8805400304.png'
 >           const url2 = 'https://img3.mukewang.com/szimg/64b9f4fa09cde80805400304.png'
 >           loading(url1).then(img1 => {
@@ -1662,7 +1662,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                   console.log(error); // try..catch相当于Promise的catch
 >               }
 >           })()
->       
+>                     
 >   ```
 >
 > 
@@ -1706,15 +1706,15 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               await async3()
 >               console.log('async1 end 2'); // 7
 >           }
->                                     
+>                                                   
 >           async function async2 () {
 >               console.log('async2'); // 3
 >           }
->                                     
+>                                                   
 >           async function async3 () {
 >               console.log('async3'); // 6
 >           }
->                                     
+>                                                   
 >           console.log('script start'); // 1
 >           async1()
 >           console.log('script end'); // 4
@@ -1798,7 +1798,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >
 >   ```js
 >       console.log("script start")
->       
+>                     
 >       setTimeout(function () {
 >         console.log("setTimeout1");
 >         new Promise(function (resolve) {
@@ -1812,32 +1812,32 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >           console.log("then2");
 >         });
 >       });
->       
+>                     
 >       new Promise(function (resolve) {
 >         console.log("promise1");
 >         resolve();
 >       }).then(function () {
 >         console.log("then1");
 >       });
->       
+>                     
 >       setTimeout(function () {
 >         console.log("setTimeout2");
 >       });
->       
+>                     
 >       console.log(2);
->       
+>                     
 >       queueMicrotask(() => {
 >         console.log("queueMicrotask1")
 >       });
->       
+>                     
 >       new Promise(function (resolve) {
 >         resolve();
 >       }).then(function () {
 >         console.log("then3");
 >       });
->       
+>                     
 >       console.log("script end")
->       
+>                     
 >   	// 1.script start
 >       // 2.promise1
 >       // 3.2
@@ -1861,25 +1861,25 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >           await async2()
 >       	console.log('async1 end'); // 6
 >       }
->       
+>                     
 >       async function async2 () {
 >           console.log('async2'); // 3
 >   	}
 >       console.log('script start'); // 1
->       
+>                     
 >       setTimeout(function () {
 >       	console.log('setTimeout'); // 8
 >       }, 0)
->       
+>                     
 >       async1()
->       
+>                     
 >       new Promise(function (resolve) {
 >           console.log('promise1'); // 4
 >           resolve()
 >       }).then(() => {
 >       	console.log('promise2'); // 7
 >       })
->       
+>                     
 >   	console.log('script end'); // 5
 >   ```
 
@@ -1907,7 +1907,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                           this.value = value
 >                           this.resolveCallbacks.forEach(fn => fn() )
 >                       }
->                                                         
+>                                                                       
 >                   }
 >                   const rejectHandler = (reason) => {
 >                       if (this.state === 'pending') {
@@ -1915,14 +1915,14 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                           this.reason = reason
 >                           this.rejectCallbacks.forEach(fn => fn() )
 >                       }
->                                                         
+>                                                                       
 >                   }
 >                   try {
 >                       fn(resolveHandler, rejectHandler)
 >                   } catch (error) {
 >                       rejectHandler(error)
 >                   }
->                                                         
+>                                                                       
 >               }
 >               then (fn1, fn2) {
 >                   fn1 = typeof fn1 === 'function' ? fn1 : v => v
@@ -1949,7 +1949,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                       })
 >                       // console.log(p1 === this);
 >                       return p1
->                                                         
+>                                                                       
 >                   }
 >                   if (this.state === 'fulfilled') {
 >                       const p1 = new MyPromise((resolve, reject) => {
@@ -1973,23 +1973,23 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                       })
 >                       return p1
 >                   }
->                                                         
+>                                                                       
 >               }
 >               catch (fn) {
 >                   return this.then(null, fn)
 >               }
 >           }
->                                                         
+>                                                                       
 >           // Promise的静态方法
->                                                         
+>                                                                       
 >           MyPromise.resolve = function (value) {
 >               return new MyPromise((resolve, reject) => { resolve(value) })
 >           }
->                                                         
+>                                                                       
 >           MyPromise.reject = function (reason) {
 >               return new MyPromise((resolve, reject) => { reject(reason) })
 >           }
->                                                         
+>                                                                       
 >           // 传入promise数组，等待所有的都fulfilled之后，返回新promise，包含前面的所有结果
 >           MyPromise.all = function (promiseList = []) {
 >               const p1 = new MyPromise((resolve, reject) => {
@@ -2012,7 +2012,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               })
 >               return p1
 >           }
->                                                         
+>                                                                       
 >           // 传入promise数组，只要有一个fulfilled，即可返回新promise
 >           MyPromise.race = function (promiseList = []) {
 >               let resolved = false
@@ -2121,19 +2121,19 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >
 >   ```js
 >             const listNode = document.getElementById('list')
->                                     
+>                                                   
 >             // 创建一个文档碎片,此时还没有插入到DOM树中
 >             const frag = document.createDocumentFragment()
->                                     
+>                                                   
 >             // 执行插入
 >             for (let i = 0; i < 10; i++) {
 >                 const li = document.createElement('li')
 >                 li.innerHTML = `list item ${i}`
->                                     
+>                                                   
 >                 // 先插入文档碎片中,其游离在DOM树之外
 >                 frag.appendChild(li)
 >             }
->                                     
+>                                                   
 >             // 都完成之后,再插入到DOM树中
 >             listNode.appendChild(frag)
 >   ```
@@ -2214,7 +2214,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >                   fn = selector
 >                   selector = null
 >               }
->                             
+>                                           
 >               elem.addEventListener(type, e => {
 >                   const target = e.target
 >                   // 事件代理
@@ -2234,7 +2234,7 @@ ES6之前的原理流程，ES6之前，主要是有全局作用域和函数作�
 >               event.preventDefault()
 >               alert(this.innerHTML)
 >           })
->                             
+>                                           
 >           // 事件代理
 >           const div3 = document.getElementById('div3')
 >           bindEvent(div3, 'click', 'a', function (event) {
@@ -2659,9 +2659,9 @@ ajax('/data/test.json')
 >                           isImmediate = true
 >                           return
 >                       }
->   
+>                               
 >                       if (timer) clearTimeout(timer)
->   
+>                               
 >                       timer = setTimeout(() => {
 >                           const res = fn.apply(this, args)
 >                           resolve(res)
@@ -2670,17 +2670,17 @@ ajax('/data/test.json')
 >                       }, delay)
 >                   })
 >               }
->   
+>                               
 >               // 取消执行逻辑
 >               _debounce.cancel = function () {
 >                   if (timer) clearTimeout(timer)
 >                   timer = null
 >                   isImmediate = false
 >               }
->   
+>                               
 >               return _debounce
 >           }
->   
+>                               
 >           const debounce = hydebounce(function (event) {
 >               console.log('函数被执行', this.value, event);
 >               return '我是防抖'
@@ -2725,24 +2725,24 @@ ajax('/data/test.json')
 >   ```js
 >           const inputEl = document.querySelector('input')
 >           const button = document.querySelector('button')
->   
+>                 
 >           function hythrottle (fn, interval, { leading = false, trailing = false } = {}) {
->   
+>                 
 >               let startTime = 0
 >               let timer = null
->   
+>                 
 >               const _throttle = function (...args) {
->   
+>                 
 >                   return new Promise((resolve, reject) => {
 >                       const nowTime = new Date().getTime()
->   
+>                 
 >                       // 第一次是否执行的逻辑
 >                       if (!leading && startTime === 0) {
 >                           startTime = nowTime
 >                       }
->   
+>                 
 >                       const waiteTime = interval - (nowTime - startTime)
->   
+>                 
 >                       // 按照一定频率执行的逻辑
 >                       if (waiteTime <= 0) {
 >                           if (timer) clearTimeout(timer)
@@ -2752,7 +2752,7 @@ ajax('/data/test.json')
 >                           timer = null
 >                           return
 >                       }
->   
+>                 
 >                       // 是否执行最后一次逻辑
 >                       if (trailing && !timer) {
 >                           timer = setTimeout(() => {
@@ -2764,7 +2764,7 @@ ajax('/data/test.json')
 >                       }
 >                   })
 >               }
->   
+>                 
 >               // 取消执行的逻辑
 >               _throttle.cancel = function () {
 >                   if (timer) {
@@ -2773,7 +2773,7 @@ ajax('/data/test.json')
 >                       timer = null
 >                   }
 >               }
->   
+>                 
 >               return _throttle
 >           }
 >   
@@ -2782,7 +2782,7 @@ ajax('/data/test.json')
 >               console.log('函数被执行了', this.value, event);
 >               return '我是返回值'
 >           }, 5000, { trailing: true })
->   
+>                               
 >           inputEl.oninput = throttle
 >   
 >   
@@ -2803,6 +2803,299 @@ ajax('/data/test.json')
 
 
 # 二面
+
+
+
+## Vue模块
+
+### 声明式编程和命令式编程的区别
+
+声明式编程
+
+* 声明式编程关注的是 “what to do”，由框架(机器)完成 “how”的过程
+
+* 我们会在createApp传入的对象中声明需要的内容，模板template、数据data、方法methods;这样的编写代码的过程，我们称之为是**声明式编程**
+
+* 目前Vue、React、Angular、小程序的编程模式，我们称之为**声明式编程**
+
+  ```
+  用vue实现计数器就是声明式编程
+  ```
+
+
+
+
+### v-if 和 v-for不能一起使用
+
+> * 原因:v-for的优先级比v-if高，如下面这种情况就会浪费性能
+>
+>   ```vue
+>       <ul>
+>           <li v-if="isShow" v-for="item in list" :key="item.id"></li>
+>       </ul>
+>   ```
+>
+>   所以，可以将v-if的判断放在ul上
+
+
+
+### v-if和v-show有什么区别
+
+* 在用法上的区别： 
+
+  * v-show是不支持template； 
+  * v-show不可以和v-else一起使用；
+
+* 本质的区别
+
+  * v-show元素无论是否需要显示到浏览器上，它的DOM实际都是有存在的，只是通过CSS的display属性来进行切换； 
+  * v-if当条件为false时，其对应的原生压根不会被渲染到DOM中
+
+  
+
+### v-for中的key有什么作用？什么是虚拟DOM？
+
+* 有key的操作:
+
+  * 根据key找到之前的VNode进行复用;
+  * 没有VNode可以复用, 再创建新的VNode
+
+* 没有key的操作:
+
+  * diff算法, 后续VNode复用性就不强
+
+* VNode
+
+  ```
+  1.VNode的全称是Virtual Node，也就是虚拟节点
+  2.VNode的本质是一个JavaScript的对象
+  3.template元素 ->解析成 VNode--->转换为真实DOM元素
+  ```
+
+* 虚拟DOM
+
+  * template元素--->一个个VNode虚拟节点--->VNode Tree -->虚拟DOM--->真实DOM
+
+  * 作用
+    * 方便进行diff算法
+    * 方便进行跨平台
+
+
+
+### 什么是双向绑定？v-model的本质是什么？
+
+双向绑定:
+
+* 即当数据发生变化的时候，视图也就发生变化，当视图发生变化的时候，数据也会跟着同步变化
+* v-model 是语法糖，它负责监听用户的输入事件来更新数据
+
+v-model的原理
+
+* v-bind绑定value属性的值
+* v-on绑定input事件监听到函数,函数会获取最新的值赋值到绑定的属性中
+
+```html
+ <input type="text" :value="message" @input="message = $event.target.value" />
+```
+
+
+
+### Vue父子组件间通讯方式
+
+> * props 父组件数据传入子组件
+>
+>   - ```js
+>     <child :title="hello " :message="child" :list="[1,2,3]"/>
+>     ```
+>
+>   子组件接收父组件传入的值
+>
+>   - ```js
+>     export default {
+>         // 需要注意的是 传入的数据需要进行注册
+>         // 如果不注册 则被当作 attr 的参数 可以通过$attr.的方式在template进行访问 或者会自动进行同类型的合并
+>         props: ["title", "message", "list"] // 数组写法
+>         props: {
+>             title: {
+>                 type: String,
+>                 default: "wmm"
+>             },
+>         	message: {
+>               	type: String,
+>             	default: "111"
+>             },
+>              // 对象类型的数据的默认值为一个函数
+>              list: {
+>                  type: Array,
+>                  default: ()=>([1,2,3])
+>              },
+>     }
+>     }
+>     ```
+>
+>   
+>
+> * 子组件传递给父组件函数
+>
+>   * 就是向子组件中传递一个回调函数，子组件通过emit触发这个函数，并将数据携带过去
+>
+>   - ```js
+>     export default {
+>     	emits: ["change"],
+>       emits: {
+>         change:payload => {
+>           // 进行校验 用的比较少
+>           return true
+>         }
+>       }
+>       setup(props, {emit}){
+>         const changeClick = (index) => {
+>           emit("change",index)
+>         }
+>         return {
+>           changeClick
+>         }
+>       }
+>     }
+>     ```
+>
+
+
+
+### Vue组件间通信方式
+
+> * vuex和pinia
+>
+> * 事件总线
+>
+>   * 在组件A中 通过eventBus.on监听事件
+>
+>   * 在组件B中通过eventBus.emit发射事件
+>
+> * provide和inject
+>
+>   * 父组件有一个 provide 选项来提供数据
+>
+>   * 子组件有一个 inject 选项来开始使用这些数据(注入)
+>
+>   * ```
+>     注意点:
+>     1)provide选项一般写成函数
+>     2) 处理响应式数据:通过computed函数,computed返回的是一个ref对象，需要取出其中的value来使用
+>     ```
+>
+>     
+>
+
+
+
+### ref和reactive有什么区别？开发中如何选择？
+
+> - ref可以包裹任意数据类型
+> - reactive只能包裹复杂数据类型，比如对象、数组
+>
+> 
+>
+> - ref返回一个ref对象，在script中取值需要通过value属性，但是在模板中使用会进行解包不需要调用value
+> - reactive包裹的是复杂数据类型，直接取里面的属性即可
+>
+> 
+>
+> - ref几乎可以应用在任何场景，而且包含reactive适合的场景
+> - reactive的应用场景比较受限，第一：值比较固定，第二：值与值之间是有联系的
+>
+> 
+>
+> - 开发中尽量选择ref
+
+
+
+### Vue2响应式核心API—defineProperty的缺点
+
+> * 深度监听，需要递归到底，一次性计算量大
+> * 无法监听新增属性/删除属性（需要使用Vue.set/Vue.delete）
+> * defineProperty 的主要设计目的是引入一种方式，让开发者能够显式地定义对象属性的配置。最开始的目的就不是做响应式
+
+
+
+### 用JS模拟DOM结构
+
+
+
+### VDOM 总结
+
+> * 用JS模拟DOM结构(vnode)
+> * 新旧vnode对比，计算出最小更新范围，最后更新DOM
+> * 数据驱动视图模式下，有效控制DOM操作
+
+
+
+### diff算法优化(n³->n)
+
+> * 只比较同一级，不跨层级比较
+> * tag不同，直接删掉重建，不再深度比较
+> * tag 和 key相同，则为同一节点，不再深度比较
+
+
+
+### snabbdom库中的diff算法源码流程
+
+> * 核心函数：h，vnode，patch，patchVnode，updateChidren
+
+
+
+### 组件渲染/更新过程
+
+> * 初次渲染
+>
+>   * 编译模板为render函数
+>   * 触发响应式，监听data属性getter setter
+>   * 执行render函数，生成vnode，然后patch(element, vnode)
+>
+> * 更新渲染
+>
+>   * 修改data，触发setter
+>   * 重新执行render函数，生成newVnode
+>   * patch(vnode, newVnode)
+>
+> * 异步渲染
+>
+>   * $nextTick
+>   * 汇总data的修改，一次性更新视图
+>   * 减少DOM操作次数，提高性能
+>
+> * 流程图
+>
+>   ![](./images/组件渲染或更新过程.jpg)
+
+
+
+
+
+
+
+### JS实现hash和h5 history模式的核心
+
+> * hash：window.onhashchange
+> * history: history.pushState，window.onpopstate
+
+
+
+### Vue常见性能优化方式
+
+> * v-if和v-show合理使用
+> * 合理使用computed
+> * v-for时加key，以及避免和v-if一起使用
+> * 自定义事件，DOM事件即使销毁
+> * 合理使用异步组件
+> * 合理使用keep-alive
+> * Vue2中的data层级不要太深
+> * 使用vue-loader在开发环境做模板编译
+> * webpack层面的优化(后续补充)
+> * 前端通用的性能优化，如图片懒加载
+> * SSR
+
+
 
 ### 手写Vue2的响应式原理
 
